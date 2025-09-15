@@ -204,17 +204,17 @@ impl Decodable for ServiceFlags {
 pub struct Magic(pub [u8; 4]);
 
 impl Magic {
-    /// Bit mainnet network magic bytes ("B1TF")
-    pub const BITCOIN: Self = Self([0x42, 0x31, 0x54, 0x46]);
+    /// TRMP mainnet network magic bytes ("TRMP")
+    pub const BITCOIN: Self = Self([0x54, 0x52, 0x4D, 0x50]);
 
-    /// Bit testnet network magic bytes ("8tB1")
-    pub const TESTNET: Self = Self([0x38, 0x74, 0x42, 0x31]);
+    /// TRMP testnet network magic bytes (same as mainnet)
+    pub const TESTNET: Self = Self([0x54, 0x52, 0x4D, 0x50]);
 
-    /// Bit signet network magic bytes (mirror testnet)
-    pub const SIGNET: Self = Self([0x38, 0x74, 0x42, 0x31]);
+    /// TRMP signet network magic bytes (mirror testnet)
+    pub const SIGNET: Self = Self([0x54, 0x52, 0x4D, 0x50]);
 
-    /// Bit regtest network magic bytes ("REGB")
-    pub const REGTEST: Self = Self([0x52, 0x45, 0x47, 0x42]);
+    /// TRMP regtest network magic bytes (same as mainnet)
+    pub const REGTEST: Self = Self([0x54, 0x52, 0x4D, 0x50]);
 
     /// Create network magic from bytes.
     pub fn from_bytes(bytes: [u8; 4]) -> Magic { Magic(bytes) }
@@ -411,17 +411,17 @@ mod tests {
     #[test]
     fn magic_from_str() {
         let known_network_magic_strs = [
-            ("42315446", Network::Bitcoin),
-            ("38744231", Network::Testnet),
-            ("52454742", Network::Regtest),
-            ("38744231", Network::Signet),
+            ("54524D50", Network::Bitcoin),
+            ("54524D50", Network::Testnet),
+            ("54524D50", Network::Regtest),
+            ("54524D50", Network::Signet),
         ];
 
         for (magic_str, network) in &known_network_magic_strs {
             let magic: Magic = Magic::from_str(magic_str).unwrap();
             let parsed = Network::try_from(magic).unwrap();
             // Bit testnet and signet share the same magic; allow either.
-            if *magic_str == "38744231" {
+            if *magic_str == "54524D50" {
                 assert!(parsed == Network::Testnet || parsed == Network::Signet);
             } else {
                 assert_eq!(parsed, *network);
